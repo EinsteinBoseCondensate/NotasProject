@@ -1,0 +1,82 @@
+﻿@{
+    var AppName = System.Configuration.ConfigurationManager.AppSettings.Get("AppName");
+}
+<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.Name">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @AppName</title>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.RenderFormat(
+       "<script type=\"text/javascript\" src=\"{0}\" charset=\"UTF-8\"></script>", "~/bundles/quill")
+    @RenderSection("scripts", required: false)
+    @Styles.Render("~/Content/css")
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink(AppName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Notas", "Index", "Notas")</li>
+                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="top-container">
+        <h1>@ViewBag.Title</h1>
+        <p>@ViewBag.Description</p>
+    </div>
+    <div class="header text-center titlespan" id="myHeader">
+    </div>
+    <div class="container body-content main-body">
+        <div>
+            @RenderBody()
+        </div>
+
+        <footer class="main-footer">
+            <hr />
+            <p>&copy; @DateTime.Now.Year - @AppName</p>
+        </footer>
+    </div>
+    <div class="popupContainer"></div>
+    <script>
+        $(document).ready(function () {
+            function Token() {return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
+            window.onscroll = function () { myFunction() };
+            var header = document.getElementById("myHeader");
+            var sticky = header.offsetTop;
+            function myFunction() {
+                if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
+                    header.classList.add("sticky");
+                    $(header).css({ "top": $(".navbar")[0].scrollHeight + "px" });
+                    header.innerHTML = $(".top-container").find("h1")[0].innerHTML;
+                    $(".body-content").css({ "margin-top": $(header).scrollHeight + "px" });
+                } else {
+                    header.classList.remove("sticky");
+                    $(header).css({ "top": "0px" })
+                    header.innerHTML = "";
+                }
+            }
+        });
+    </script>
+    
+    @Scripts.Render("~/bundles/modals")
+</body>
+</html>
+

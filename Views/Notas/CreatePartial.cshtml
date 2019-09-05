@@ -1,0 +1,45 @@
+﻿<div>
+    @Html.AntiForgeryToken()
+    @*Estructura de elementos para que la librería añada lo que le pasamos en el callback del load*@
+    <div class="Editor-container">
+        <div id="editor">
+        </div>
+    </div>
+    <div class="col-md-3" />
+    <div class="col-md-6" />
+    <hr class="editor-buttons-separator" />
+    <div class="col-md-3" />
+    <div class="row editor-footer">
+
+    <div class="col-md-4" />
+
+    <div class="col-md-6">
+        <div class="col-md-2">
+            <div class="buttonscont">
+                @{ if (ViewBag.Edit == null)
+                    {
+                        <button type="button" onclick="Create()" disabled class="btn btn-default savenote">Crear</button>
+                    }
+                    else
+                    {
+                        <button type="button" onclick="Save()" disabled class="btn btn-default savenote">Guardar</button>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="checkbox">
+                <label class="custom-control-label" for="customSwitch1">Mantener editor al buscar</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="anchor">
+                <label class="custom-control-label" for="customSwitch1"><span class="glyphicon glyphicon-heart"></span></label>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+
