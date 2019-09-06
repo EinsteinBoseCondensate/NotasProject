@@ -82,12 +82,21 @@ function GoEditor(innerHTML, anchor = false, url) {
     });
 }
 function GoEditEditor(notaid, anchored, notacontent) {
-    GoEditor(notacontent, anchored, true);
+    if ($(".editor-output")[0].innerHTML == "") {
+        GoEditor(notacontent, anchored, true);
+    } else {
+        $(".ql-editor")[0].innerHTML = notacontent;
+        $('input[id=anchor]')[0].checked = anchored;
+        $(".buttonscont")[0].innerHTML = "<p class=\"text-center button-margin-top\"><a class=\"btn btn-default \" onclick=\"Save()\">Guardar <span class=\"edit-sym glyphicon\"></span></a></p>";
+    }
     $("#NotaId")[0].value = notaid;
 }
 function GoWatch() {
-    $(".editor-output")[0].innerHTML = "";
-    $(".editor-output").load(window.location.origin + "/Notas/MisNotas", function (res, stt, xhr) {
+    if ($('input[id=keepEditor]')[0] != undefined && !$('input[id=keepEditor]')[0].checked) {
+        $(".editor-output")[0].innerHTML = "";
+    }
+    
+    $(".collection-output").load(window.location.origin + "/Notas/MisNotas", function (res, stt, xhr) {
         if (stt == "success") {
         }
         else {
@@ -111,4 +120,10 @@ function GoErase(notaid) {
             RenderError("Tu nota no ha podido eliminarse");
         }
     }).fail(function (err) { alert("El servidor no responde o no tiene usted conexión, el error fue: " + err) });
+}
+function wipeNotas() {
+    $(".collection-output")[0].innerHTML = "";
+}
+function wipeEditor() {
+    $(".editor-output")[0].innerHTML = "";
 }

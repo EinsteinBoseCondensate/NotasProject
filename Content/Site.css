@@ -12,6 +12,9 @@
     position: absolute;
 
 }
+.buttons-margin-top{
+    margin-top:3%;
+}
 .left-margin {
     margin-left: 3%;
 }

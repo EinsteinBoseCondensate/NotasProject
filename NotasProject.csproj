@@ -214,7 +214,6 @@
     <Compile Include="Repositories\IGenericRepo.cs" />
     <Compile Include="Repositories\NotasRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\CryptoService.cs" />
     <Compile Include="Services\Helpers\ArrayHelper.cs" />
     <Compile Include="Services\LoggerService.cs" />
@@ -291,7 +290,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Services\NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
