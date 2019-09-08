@@ -10,7 +10,6 @@ namespace NotasProject.Models.Config
 {
     public class NotasErrorAttribute : HandleErrorAttribute
     {
-        private ApplicationDbContext _context = new ApplicationDbContext();
         public NotasErrorAttribute()
         {
         }

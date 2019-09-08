@@ -47,7 +47,7 @@ namespace NotasProject
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = true,
             };
 
             // Configure la lógica de validación de contraseñas

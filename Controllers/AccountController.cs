@@ -9,7 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NotasProject.Models;
-using NotasProject.Repositories;
+using NotasProject.Properties;
 using NotasProject.Services;
 
 namespace NotasProject.Controllers
@@ -19,18 +19,16 @@ namespace NotasProject.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private UserRepository _userRepo;
+        private UserService _userserv;
 
-        public AccountController(UserService userserv) : base(userserv)
+        public AccountController(UserService userserv) : base()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager,
-                                 UserRepository userRepo, UserService userserv) : base(userserv)
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager) : base()
         {
             UserManager = userManager;
             SignInManager = signInManager;
-            _userRepo = userRepo;
         }
 
         public ApplicationSignInManager SignInManager
@@ -85,8 +83,9 @@ namespace NotasProject.Controllers
             {
                 case SignInStatus.Success:
                     {
-                        ApplicationUser user = _userRepo.GetByEmail(model.Email);
-                        SetSessionItem("user", user);
+                        ApplicationUser user = UserManager.FindByEmail(model.Email);
+                        //Añadir aquí la compmrobación del EmailVerified y si no es así redirigir, no sé si hay un flag para saber si ya se le ha mandado el correo de verficación, pero habría que distinguir entre las distintas situaciones, cuando ya se le ha mandado pero el usuario no se ha metido a verficar la cuenta...
+                        SetSessionItem(Resources.CurrentUserObject, user);
                         return RedirectToLocal(returnUrl);
                     }
                 case SignInStatus.LockedOut:
@@ -173,7 +172,7 @@ namespace NotasProject.Controllers
 
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                   /// await UserManager.EmailService.SendAsync(new IdentityMessage() { Destination = , "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>" });
 
                     return RedirectToAction("Index", "Home");
                 }

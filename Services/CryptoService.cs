@@ -7,12 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
+using NotasProject.Properties;
 
 namespace NotasProject.Services
 {
     public static class CryptoService
     {
+        private static string AES_KEY = ConfigurationManager.AppSettings.Get(Resources.AES_KEY);
         public static string Hash(string chars)
         {
             byte[] salt = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings.Get("HASH_SALT"));
@@ -26,8 +27,8 @@ namespace NotasProject.Services
         {
             using (AesManaged aes = new AesManaged())
             {
-                byte[] AES_KEY = ArrayHelper.ConvertHexStringToByteArray(ConfigurationManager.AppSettings.Get("AES_KEY"));
-                ICryptoTransform encryptor = aes.CreateEncryptor(AES_KEY, nonce);
+                byte[] AES_KEY_BYTE = ArrayHelper.ConvertHexStringToByteArray(AES_KEY);
+                ICryptoTransform encryptor = aes.CreateEncryptor(AES_KEY_BYTE, nonce);
                 using (MemoryStream ms = new MemoryStream())
                 {
                     using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
@@ -43,10 +44,10 @@ namespace NotasProject.Services
         public static string AES_Decrypt(string strg, byte[] nonce)
         {
             byte[] cypherText = Convert.FromBase64String(strg);
-            byte[] AES_KEY = ArrayHelper.ConvertHexStringToByteArray(ConfigurationManager.AppSettings.Get("AES_KEY"));
+            byte[] AES_KEY_BYTE = ArrayHelper.ConvertHexStringToByteArray(AES_KEY);
             using (AesManaged aes = new AesManaged())
             {
-                ICryptoTransform decryptor = aes.CreateDecryptor(AES_KEY, nonce);
+                ICryptoTransform decryptor = aes.CreateDecryptor(AES_KEY_BYTE, nonce);
                 using (MemoryStream ms = new MemoryStream(cypherText))
                 {
                     using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
@@ -69,10 +70,10 @@ namespace NotasProject.Services
         {
             byte[] bitnonce = Convert.FromBase64String(nonce);
             byte[] cypherText = Convert.FromBase64String(strg);
-            byte[] AES_KEY = ArrayHelper.ConvertHexStringToByteArray(ConfigurationManager.AppSettings.Get("AES_KEY"));
+            byte[] AES_KEY_BYTE = ArrayHelper.ConvertHexStringToByteArray(AES_KEY);
             using (AesManaged aes = new AesManaged())
             {
-                ICryptoTransform decryptor = aes.CreateDecryptor(AES_KEY, bitnonce);
+                ICryptoTransform decryptor = aes.CreateDecryptor(AES_KEY_BYTE, bitnonce);
                 using (MemoryStream ms = new MemoryStream(cypherText))
                 {
                     using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
@@ -89,8 +90,8 @@ namespace NotasProject.Services
             byte[] nonce = SetUnique16BitAES_IV();
             using (AesManaged aes = new AesManaged())
             {
-                byte[] AES_KEY = ArrayHelper.ConvertHexStringToByteArray(ConfigurationManager.AppSettings.Get("AES_KEY"));
-                ICryptoTransform encryptor = aes.CreateEncryptor(AES_KEY, nonce);
+                byte[] AES_KEY_BYTE = ArrayHelper.ConvertHexStringToByteArray(AES_KEY);
+                ICryptoTransform encryptor = aes.CreateEncryptor(AES_KEY_BYTE, nonce);
                 using (MemoryStream ms = new MemoryStream())
                 {
                     using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))

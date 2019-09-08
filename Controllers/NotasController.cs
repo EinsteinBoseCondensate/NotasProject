@@ -7,9 +7,10 @@ using NotasProject.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using NotasProject.Properties;
 using System.Web;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace NotasProject.Controllers
 {
@@ -17,49 +18,87 @@ namespace NotasProject.Controllers
     public class NotasController : BaseController
     {
         private NotasService _notasService;
-        public NotasController(NotasService notasService, UserService userServ) :base(userServ)
+        public NotasController(NotasService notasService) :base()
         {
             _notasService = notasService;
         }
 
         public ActionResult Index()
         {
-            ViewBag.Title = "Notas";
-            ViewBag.Description = "Tu espacio para crear notas, consultarlas y editarlas";
+            ViewBag.Title = Resources.NotasIndexTitle;
+            ViewBag.Description = Resources.NotasIndexMessage;
             return View();
         }
 
         [ValidateAntiForgeryToken, HttpPost, ValidateInput(false)]
-        public ActionResult Create(CreateNotaDTO dto)
+        public async Task<ActionResult> Create(CreateNotaDTO dto)
         {
-            return SimpleJSONFeedback(_notasService.Create(dto, GetCurrentUser()));
+            var tuple = await Task.Run(() => _notasService.Create(dto, GetCurrentUser()) );
+            if (tuple.Item1 == PersistedState.OK && ExistsKey(Resources.MisNotas))
+            {
+                NotasCache cached = GetSessionItem<NotasCache>(Resources.MisNotas);
+                if (dto.Anchor)
+                {
+                    cached.anchored.Add(tuple.Item2);
+                    cached.anchored = cached.anchored.OrderByDescending(nota => nota.CDT).ToList();
+                }
+                else
+                {
+                    cached.notAnchored.Add(tuple.Item2);
+                    cached.notAnchored = cached.notAnchored.OrderByDescending(nota => nota.CDT).ToList();
+                }
+                RemoveFromSession(Resources.MisNotas);//Como aprovecho parte de la key para saber el nonce del AES y este nonce se genera automáticamente y siempre es distinto, no me lo va a sobreescribir en caché, me va a crear un NotasCache cada vez!!!
+                SetSessionItem(Resources.MisNotas, cached);
+            }
+            return SimpleJSONFeedback(tuple.Item1);
         }
 
         public ActionResult Editor(string option)
         {
-            if(option == "Edit")
+            if(option == Resources.NotasEditorParamOptionEdit)
             {
                 ViewBag.Edit = true;
             }
-            return PartialView("CreatePartial");
+            return PartialView();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken, ValidateInput(false)]
         public ActionResult Save(NotaDTO dto)
         {
-            return SimpleJSONFeedback(_notasService.Edit(dto));
+            PersistedState ps = _notasService.Edit(dto);
+            if(ps == PersistedState.OK)
+            {
+                NotasCache cached = GetSessionItem<NotasCache>(Resources.MisNotas);
+                RemoveFromSession(Resources.MisNotas);
+                SetSessionItem(Resources.MisNotas, _notasService.UpdateCache(cached, dto));
+            }
+            return SimpleJSONFeedback(ps);
         }
         //[ValidateAntiForgeryToken]
         public ActionResult MisNotas()
         {
-            var response = _notasService.GetNotasByUserId(GetCurrentUser().Id);
+            NotasCache response;
+            if (ExistsKey(Resources.MisNotas)) {
+                response = GetSessionItem<NotasCache>(Resources.MisNotas);
+            } else {
+                response = _notasService.GetNotasByUserId(GetCurrentUser().Id);
+                SetSessionItem(Resources.MisNotas,response);
+                    }
             return PartialView(response);
         }
         [HttpPost]
         public ActionResult Delete(SinglePropJson json)
         {
-            return SimpleJSONFeedback(_notasService.Remove(int.Parse(json.Value)));
+            PersistedState ps = _notasService.Remove(int.Parse(json.Value));
+            if (ps == PersistedState.OK)
+            {
+                NotasCache cached = GetSessionItem<NotasCache>(Resources.MisNotas);
+                RemoveFromSession(Resources.MisNotas);
+                SetSessionItem(Resources.MisNotas, _notasService.RemoveFromCache(cached, json));
+            }
+
+            return SimpleJSONFeedback(ps);
         }
     }
-}
+} 

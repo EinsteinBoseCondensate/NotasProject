@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NotasProject.Properties;
 
 namespace NotasProject.Controllers
 {
@@ -10,18 +11,15 @@ namespace NotasProject.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home";
-            ViewBag.Description = "Bienvenido, tienes cosas que contarnos, escríbelas";
+            ViewBag.Title = Resources.HomeIndexTitle;
+            ViewBag.Description = Resources.HomeIndexDescription;
             return View();
         }
 
-        public ActionResult Editor()
-        {
-            return PartialView("../Notas/CreatePartial");
-        }
         public ActionResult Contact()
         {
-            ViewBag.Message = "Tu espacio alternativo";
+            ViewBag.Title = Resources.HomeContactTitle;
+            ViewBag.Description = Resources.HomeContactDescription;
 
             return View();
         }

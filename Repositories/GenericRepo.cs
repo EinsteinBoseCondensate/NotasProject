@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NotasProject.Repoositories
 {
-    public abstract class GenericRepo<T> where T : class
+    public abstract class GenericRepo<T> : IGenericRepo<T> where T : class
     {
         public ApplicationDbContext _context;
         private DbSet<T> _set;

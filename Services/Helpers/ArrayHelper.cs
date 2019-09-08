@@ -34,5 +34,10 @@ namespace NotasProject.Services.Helpers
             }
             return data;
         }
+
+        internal static byte[] ConvertHexStringToByteArray(byte[] aES_KEY)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

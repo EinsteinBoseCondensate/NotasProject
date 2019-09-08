@@ -1,0 +1,44 @@
+﻿<div class="main-create-partial-container">
+    @Html.AntiForgeryToken()
+    @*Estructura de elementos para que la librería añada lo que le pasamos en el callback del load*@
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-12">
+            <div class="Editor-container">
+                <div id="editor">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="editor-buttons-separator" />
+    
+    <div class="footer-editor">
+        <div class="buttonscont">
+            <button type="button" class="btn btn-default right-mrg" onclick="wipeEditor()" style="">Quemar editor <span class="edit-sym glyphicon glyphicon-fire"></span></button>
+            @{ if (ViewBag.Edit == null)
+                {
+                    <button type="button" onclick="Create()" disabled class="btn btn-default savenote">Crear</button>
+                }
+                else
+                {
+                    <button type="button" onclick="Save()" disabled class="btn btn-default savenote">Guardar</button>
+                    <button class="btn btn-default" onclick="KillSaveState()">No quiero editar esto <span class="edit-sym glyphicon"></span></button>
+                }
+            }
+        </div>
+
+        <div class="middle-buttons">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="keepEditor">
+                <label class="custom-control-label" for="keepEditor">Mantener editor al buscar</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="anchor">
+                <label class="custom-control-label" for="anchor"><span class="glyphicon glyphicon-heart"></span></label>
+            </div>
+        </div>
+       
+    </div>
+</div>
+

@@ -11,17 +11,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
+using NotasProject.Properties;
 
 namespace NotasProject.Controllers
 {
     public class BaseController : Controller
     {
-        private readonly string keyCacheSeparator = "_$__%___&___%__$_";
-        private readonly UserService _userService;
-        public BaseController(UserService userServ)
-        {
-            _userService = userServ;
-        }
+        private readonly string keyCacheSeparator = Resources.KeyCacheSeparator;
         public void SetSessionItem<TClass>(string key, TClass value)
         {
             try
@@ -50,44 +46,52 @@ namespace NotasProject.Controllers
         }
         public ApplicationUser GetCurrentUser()
         {
-            return ExistsKey("user") ? GetSessionItem<ApplicationUser>("user") : GetFromPrincipal() ;
+            return ExistsKey(Resources.CurrentUserObject) ? GetSessionItem<ApplicationUser>(Resources.CurrentUserObject) : GetFromPrincipal() ;
         }
         private ApplicationUser GetFromPrincipal()
         {
-            ApplicationUser user = _userService.GetByEmail(User.Identity.Name);
-            _userService.DetachUser(user);//Prevenir que EF Trackee el objeto por dos contextos **por la solución al problema de la caché en NotasRepository
-            SetSessionItem("user",user);
-            return user;
+            using (UserRepository _userService = new UserRepository(new ApplicationDbContext()))
+            {
+                ApplicationUser user = _userService.GetByEmail(User.Identity.Name);
+                SetSessionItem(Resources.CurrentUserObject, user);
+                return user;
+            }
+        }
+        public void RemoveFromSession(string key)
+        {
+            IterateKeys(out string[] aux);
+            var keypart = aux.FirstOrDefault(x => x.ToString() == (key));
+            var truekey = Session.Keys.Get(Array.IndexOf(aux, keypart));
+            Session.Remove(truekey);
         }
         public bool ExistsKey(string key)
         {
-            return Session.Keys.Count == 0 ? false : StreamThroughKeys(key);
+            return Session.Keys.Count == 0 ? false : IsContained(key);
         }
-        public bool StreamThroughKeys(string key)
+        public bool IsContained(string key)
         {
-            var checker = 0;
-            string[] aux = new string[Session.Keys.Count];
-            foreach (var a in Session.Keys)
-            {
-                aux.SetValue(a, checker);
-                checker++;
-            }
-            return aux.Any(k => k.Contains(key));
+            IterateKeys(out string[] aux);
+            return aux.Any(k => k == key);
         }
         public Tuple<string, byte[]> TupleFromKey(string key)
         {
-            var checker = 0;
-            string[] aux = new string[Session.Keys.Count];
-            foreach (var a in Session.Keys)
-            {
-                aux.SetValue(a, checker);
-                checker++;
-            }
-            var truekey = aux.FirstOrDefault(x => x.ToString().Contains(key)).ToString();
+            IterateKeys(out string[] aux);
+            var keypart = aux.FirstOrDefault(x => x.ToString() == (key));
+            var truekey = Session.Keys.Get(Array.IndexOf(aux, keypart));
             Tuple<string, byte[]> tuple = new Tuple<string, byte[]>(truekey, Convert.FromBase64String(truekey.Split(new string[] { keyCacheSeparator }, StringSplitOptions.None)[1]));
             return tuple;
         }
-
+        public void IterateKeys(out string[] keys)
+        {
+            var checker = 0;
+            var separator = new string[] { keyCacheSeparator };
+            keys = new string[Session.Keys.Count];
+            foreach (var a in Session.Keys)
+            {
+                keys.SetValue(a.ToString().Split(separator, StringSplitOptions.None)[0], checker);
+                checker++;
+            }
+        }
         //A medida que se complique la app, por ejemplo añadiendo posibilidad de hacer amigos y 
         //de poner notas publicas y privadas y poder editar varias personas el mismo registro, 
         //añadir a PersistedState el valor OutdatedEntity a raiz de comprobar si el campo que habría 

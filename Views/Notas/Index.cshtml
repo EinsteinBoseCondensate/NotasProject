@@ -1,23 +1,28 @@
 ﻿<div>
-    @Html.Hidden("NotaId")
-    <div class="row text-center">
+    
+    <div class="shadow output-container">
+        <div class="top-main-output">
 
-        <div class="edits-top">
-            <h2>Editor</h2>
-            <p>
-                Escriba sus notas y guárdelas.
-            </p>
-            <p><a class="btn btn-default" onclick="GoEditor()">Ir a editor &raquo;</a></p>
-            <div class="consultar">
-                <h2>Mis notas</h2>
-                <p>Consulte sus notas</p>
-                <p><a class="btn btn-default" onclick="GoWatch()">Consultar &raquo;</a></p>
+            <div class="edits-top">
+                <h2>Editor</h2>
+                <p>
+                    Escriba sus notas y guárdelas.
+                </p>
+                <p><a class="btn btn-default" onclick="GoEditor()">Ir a editor &raquo;</a></p>
             </div>
+                <div class="consultar">
+                    <h2>Mis notas</h2>
+                    <p>Consulte sus notas</p>
+                    <p><a class="btn btn-default" onclick="GoWatch()">Consultar &raquo;</a></p>
+                </div>
+            
+        </div>
+        <hr />
+        <div class="gen-ajax-container">
+            <div class="editor-output"></div>
+            <div class="collection-output buttons-margin-top"></div>
         </div>
     </div>
-    <hr />
-    <div class="editor-output"></div>
-    <div class="collection-output buttons-margin-top"></div>
 </div>
 
 @Scripts.Render("~/bundles/manageNotas")

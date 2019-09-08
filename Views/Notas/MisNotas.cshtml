@@ -2,11 +2,11 @@
 @model dynamic
 
 @{
-    var result = Model as Tuple<List<NotaDTO>, List<NotaDTO>>;
+    var result = Model as NotasCache;
 }
-    <div class="col-lg-2" /><div class="col-lg-8 ">
+    <div class="col-lg-2" /><div class="col-lg-12 ">
     <div class="main-notas-container shadow allow-overflow text-center">
-        @{ foreach (NotaDTO anchored in result.Item1)
+        @{ foreach (NotaDTO anchored in result.anchored)
             {
                 <div class="main-nota-container">
                     <h4>Fecha de creación: @anchored.CDT</h4>
@@ -15,21 +15,21 @@
                     <span class="anchor-sym glyphicon glyphicon-heart"></span>
                     <p><a class="btn btn-default" onclick="GoErase(@anchored.NotaId)">Eliminar <span class="edit-sym glyphicon glyphicon-fire"></span></a></p>
                     <p><a class="btn btn-default" onclick="GoEditEditor(@anchored.NotaId, true,'@anchored.NoteContent')">Editar <span class="edit-sym glyphicon glyphicon-pencil"></span></a></p>
-                    <div class="nota-container">
+                    <div class="nota-container ql-editor saved-ql ql-container ql-snow">
                         <div><h4>@Html.Raw(anchored.NoteContent)</h4></div>
                     </div>
                 </div>
                 <hr class="hr-strong" />
             }
-            foreach (NotaDTO notAnchored in result.Item2)
+            foreach (NotaDTO notAnchored in result.notAnchored)
             {
-                <div class="main-nota-container">
+                <div class="main-nota-container ">
                     <h4>Fecha de creación: @notAnchored.CDT</h4>
                     <h4>Fecha de última modificación: @notAnchored.LUDT</h4>
                     <hr />
                     <p><a class="btn btn-default" onclick="GoErase(@notAnchored.NotaId)">Eliminar <span class="edit-sym glyphicon glyphicon-fire"></span></a></p>
-                    <p><a class="btn btn-default" onclick="GoEditEditor(@notAnchored.NotaId, false,'@notAnchored.NoteContent')">Editar <span class="edit-sym glyphicon glyphicon-pencil"></span></a></p>
-                    <div class="nota-container">
+                    <p><a class="btn btn-default" onclick="GoEditEditor(@notAnchored.NotaId, false, encodeURIComponent('@notAnchored.NoteContent.Replace("\'","\\\'")') )">Editar <span class="edit-sym glyphicon glyphicon-pencil"></span></a></p>
+                    <div class="nota-container ql-editor saved-ql ql-container ql-snow">
                         <div><h4>@Html.Raw(notAnchored.NoteContent)</h4></div>
                     </div>
                 </div>
@@ -37,6 +37,21 @@
             }
         }
     </div>
-    <p class="text-center buttons-margin-top"><a class="btn btn-default" onclick="wipeNotas()">Quitar notas<span class="edit-sym glyphicon glyphicon-fire"></span></a></p>
+    <button class="btn btn-default" onclick="wipeNotas()">Quitar notas<span class="edit-sym glyphicon glyphicon-fire"></span></button>
 </div>
 <div class="col-lg-2"/>
+
+<script>
+    $(document).ready(function () {
+        $(".main-notas-container")[0].scrollTop = notasContainerScrollTop;
+        notasContainerScrollTop = 0;
+        $(".main-notas-container").find(".ql-editor").css({
+            "padding-left": "10%",
+            "max-height": "90% !important",
+            "width": "80%",
+            "position": "relative",
+            "align-self": "center",
+            "margin-left":"10%"
+        });
+    });
+</script>

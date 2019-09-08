@@ -9,13 +9,13 @@ namespace NotasProject.Repoositories
 {
     public interface IGenericRepo<T> : IDisposable where T : class
     {
-        void Create(T entity);
-        void Remove(T entity);
-        void CreateMany(List<T> entity);
-        void RemoveMany(List<T> entity);
+        PersistedState Create(T entity);
+        PersistedState Remove(T entity);
+        PersistedState CreateMany(List<T> entity);
+        PersistedState RemoveMany(List<T> entity);
         IQueryable<T> BuildQuery();
-        void Dispose(bool disposed);
+        void Dispose();
         PersistedState TrySaveChanges();
-        void LogException();
+        void LogException(Exception ex);
     }
 }
