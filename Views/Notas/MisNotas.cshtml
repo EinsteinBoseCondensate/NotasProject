@@ -1,6 +1,5 @@
 ﻿@using NotasProject.Models.DTOs;
 @model dynamic
-
 @{
     var result = Model as NotasCache;
 }
@@ -14,7 +13,7 @@
                     <hr class="hr-strong" />
                     <span class="anchor-sym glyphicon glyphicon-heart"></span>
                     <p><a class="btn btn-default" onclick="GoErase(@anchored.NotaId)">Eliminar <span class="edit-sym glyphicon glyphicon-fire"></span></a></p>
-                    <p><a class="btn btn-default" onclick="GoEditEditor(@anchored.NotaId, true,'@anchored.NoteContent')">Editar <span class="edit-sym glyphicon glyphicon-pencil"></span></a></p>
+                    <p><a class="btn btn-default" onclick="GoEditEditor(@anchored.NotaId, true, encodeURIComponent('@anchored.NoteContent.Replace("\'","\\\'")'))">Editar <span class="edit-sym glyphicon glyphicon-pencil"></span></a></p>
                     <div class="nota-container ql-editor saved-ql ql-container ql-snow">
                         <div><h4>@Html.Raw(anchored.NoteContent)</h4></div>
                     </div>
@@ -37,10 +36,11 @@
             }
         }
     </div>
-    <button class="btn btn-default" onclick="wipeNotas()">Quitar notas<span class="edit-sym glyphicon glyphicon-fire"></span></button>
+    <div class="text-center buttons-margin-top">
+        <button class="btn btn-default" onclick="wipeNotas()">Quitar notas<span class="edit-sym glyphicon glyphicon-fire"></span></button>
+    </div>
 </div>
 <div class="col-lg-2"/>
-
 <script>
     $(document).ready(function () {
         $(".main-notas-container")[0].scrollTop = notasContainerScrollTop;

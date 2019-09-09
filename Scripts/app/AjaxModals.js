@@ -3,7 +3,7 @@
         if (stt == "success") {
             $("#Exito").modal('show');
         } else {
-            alert("Disculpa las molestias, tu nota se ha guardado correctamente pero algo no está en su sitio!");
+            alert(Messages.PopUpKO);
         }
     });
 }
@@ -15,17 +15,10 @@ function RenderError(mensaje) {
         if (stt == "success") {
             $("#Error").modal();
         } else {
-            alert("Disculpa las molestias,tu nota no se ha guardado y algo no está en su sitio!");
+            alert(Messages.PopUpKO);
         }
     });
-
 }
 function ErrorAceptar() {
     $("#Error").modal('hide');
-}
-function replaceWhiteSpaces(mensaje) {
-    while (mensaje.indexOf(" ") != -1) {
-        mensaje.replace(" ", "$$$");
-    }
-    return mensaje;
 }
