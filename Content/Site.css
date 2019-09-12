@@ -4,6 +4,13 @@
     width: 100%;
     height:100%;
 }
+.top-part-container {
+    height: auto;
+}
+
+.postizo {
+    height: 6rem;
+}
 .right {
     text-align: right;
 }

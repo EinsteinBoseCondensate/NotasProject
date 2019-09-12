@@ -81,7 +81,7 @@ function GoEditor(innerHTML, anchor = false, edit) {
             }
             if (innerHTML != undefined) {
                 var inner;
-                $.when( (function () { inner = decodeURIComponent(returnContent(innerHTML)) })() ).done(function () { $(".Editor-container").find(".ql-editor")[0].innerHTML = inner });
+                $.when( (function () { inner = decodeURIComponent(Replace(innerHTML, repart, "'")) })() ).done(function () { $(".Editor-container").find(".ql-editor")[0].innerHTML = inner });
                 
             }
             $('input[id=anchor]')[0].checked = anchor;

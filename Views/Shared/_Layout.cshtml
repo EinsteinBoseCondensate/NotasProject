@@ -18,65 +18,84 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink(AppName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Notas", "Index", "Notas")</li>
-                    <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+    <div class="top-part-container">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink(AppName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
+                        <li>@Html.ActionLink("Notas", "Index", "Notas")</li>
+                        <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
             </div>
         </div>
-    </div>
-    <div class="top-container">
-        <h1>@ViewBag.Title</h1>
-        <p>@ViewBag.Description</p>
-    </div>
-    <div class="header text-center titlespan" id="myHeader">
-    </div>
-    <div class="container body-content main-body">
-        <div>
-            @RenderBody()
+        <div class="top-container">
+            <h1>@ViewBag.Title</h1>
+            <p>@ViewBag.Description</p>
         </div>
+        <div class="header text-center titlespan" id="myHeader">
+        </div>
+    </div>
 
-        <footer class="main-footer">
-            <hr />
-            <p>&copy; @DateTime.Now.Year - @AppName</p>
-        </footer>
-    </div>
-    <div class="popupContainer"></div>
-    <script>
-        $(document).ready(function () {
-            function Token() {return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
-            window.onscroll = function () { myFunction() };
-            var header = document.getElementById("myHeader");
-            var sticky = header.offsetTop;
-            function myFunction() {
-                if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
-                    header.classList.add("sticky");
-                    $(header).css({ "top": $(".navbar")[0].scrollHeight + "px" });
-                    header.innerHTML = $(".top-container").find("h1")[0].innerHTML;
-                    $(".body-content").css({ "margin-top": $(header).scrollHeight + "px" });
-                } else {
-                    header.classList.remove("sticky");
-                    $(header).css({ "top": "0px" })
-                    header.innerHTML = "";
+        <div class="container body-content main-body">
+            <div>
+                @RenderBody()
+            </div>
+
+            <footer class="main-footer">
+                <hr />
+                <p>&copy; @DateTime.Now.Year - @AppName</p>
+            </footer>
+        </div>
+        <div class="popupContainer">
+            @Html.Partial("../AjaxModals/ModalExitoPartial")
+            @Html.Partial("../AjaxModals/ModalErrorPartial")
+        </div>
+        <script>
+            var doneDown = false, doneUp = false;
+            $(document).ready(function () {
+                function Token() { return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
+                window.onscroll = function () { myFunction() };
+                var header = document.getElementById("myHeader");
+                var sticky = header.offsetTop;
+                function myFunction() {
+                    if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
+                        if (!doneDown) {
+                            header.classList.add("sticky");
+                            $(header).css({ "top": $(".navbar")[0].scrollHeight + "px" });
+                            var postizo = document.createElement('div');
+                            $(postizo).addClass("postizo");
+                            $(".top-part-container")[0].appendChild(postizo)
+                            header.innerHTML = $(".top-container").find("h1")[0].innerHTML;
+                            $(".body-content").css({ "margin-top": $(header).scrollHeight + "px" });
+                            doneDown = true;
+                            doneUp = false;
+                        }
+                    } else if (!doneUp) {
+                        doneDown = false;
+                        doneUp = true;
+                        if ($(".postizo")[0] != undefined) {
+                            $(".postizo")[0].remove();
+                        }
+                        header.classList.remove("sticky");
+                        $(header).css({ "top": "0px" })
+                        header.innerHTML = "";
+                    }
                 }
-            }
-        });
-    </script>
-    
-    @Scripts.Render("~/bundles/modals")
+            });
+        </script>
+
+        @Scripts.Render("~/bundles/modals")
 </body>
 </html>
 
