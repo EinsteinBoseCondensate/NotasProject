@@ -1,3 +1,7 @@
 Crear nuevo proyecto de ASP.NET MVC con autenticación de usuario básica y clonar repositorio en la carpeta del proyecto.
 
-Ya que el archivo web.config va encriptado, a menos que se reciba la clave para el algoritmo RSA se deberá configurar en "appSettings" la entrada con clave "AppName" indistintamente de su valor y la entrada con clave "AES_KEY" (con valor un string en hexadecimal preferiblemente de 256 bits[usa este mismo si lo necesitas = 7aba51330626e19ac5c44d6bca4be757783ab87a03921d5c4d33a978aaaa1b981832b]) a parte de setear la cadena de conexión en su sección connectionStrings.
+Para evitar molestias web.config se ha subido desencriptado, con lo que esto => 
+{
+  (Ya que el archivo web.config va encriptado, a menos que se reciba la clave para el algoritmo RSA se deberá configurar en "appSettings"   la entrada con clave "AppName" indistintamente de su valor y la entrada con clave "AES_KEY" (con valor un string en hexadecimal           preferiblemente de 256 bits[usa este mismo si lo necesitas = 7aba51330626e19ac5c44d6bca4be757783ab87a03921d5c4d33a978aaaa1b981832b]) a     parte de setear la cadena de conexión en su sección connectionStrings) 
+}
+ya no es necesario.
