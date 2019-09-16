@@ -48,6 +48,10 @@ namespace NotasProject.Controllers
         {
             return ExistsKey(Resources.CurrentUserObject) ? GetSessionItem<ApplicationUser>(Resources.CurrentUserObject) : GetFromPrincipal() ;
         }
+        public void DeleteCurrentUser()
+        {
+            RemoveFromSession(Resources.CurrentUserObject);
+        }
         private ApplicationUser GetFromPrincipal()
         {
             using (UserRepository _userService = new UserRepository(new ApplicationDbContext()))

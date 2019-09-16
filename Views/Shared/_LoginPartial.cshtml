@@ -1,16 +1,23 @@
 ﻿@using Microsoft.AspNet.Identity
+@using NotasProject.Services
+@using NotasProject.Repositories
+@using NotasProject.Models;
+
 @if (Request.IsAuthenticated)
 {
+
+    var alias = (new UserService(new UserRepository(new ApplicationDbContext()))).GetByEmail(User.Identity.Name).Alias;//un poco rudo, pero OneLiner4eva
+
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-    @Html.AntiForgeryToken()
+        @Html.AntiForgeryToken()
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hola " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
-    </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @Html.ActionLink("Hola " + (string)alias + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+        </ul>
     }
 }
 else

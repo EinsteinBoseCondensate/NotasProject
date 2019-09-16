@@ -69,7 +69,7 @@ namespace NotasProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async  Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -156,21 +156,24 @@ namespace NotasProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Alias, Email = model.Email };
-                var result = UserManager.Create(user, model.Password);
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                user.Alias = model.Alias;
+
                 if (result.Succeeded)
                 {
-                    SignInManager.SignIn(user, isPersistent:false, rememberBrowser:false);
+                    await UserManager.UpdateAsync(user);
+                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     SetSessionItem(Resources.CurrentUserObject, user);
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
 
                     //TO DO: Configurar SMTP
-                    //string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    //string code = UserManager.GenerateEmailConfirmationToken(user.Id);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                    /// await UserManager.EmailService.SendAsync(new IdentityMessage() { Destination = , "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>" });
 
@@ -403,6 +406,7 @@ namespace NotasProject.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            DeleteCurrentUser();
             return RedirectToAction("Index", "Home");
         }
 

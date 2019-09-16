@@ -17,6 +17,10 @@ namespace NotasProject.Repositories
         {
             return this.BuildQuery().FirstOrDefault(user => user.Email == email);
         }
+        public ApplicationUser GetByName(string email)
+        {
+            return this.BuildQuery().FirstOrDefault(user => user.UserName == email);
+        }
         public void DetachUser(ApplicationUser user)
         {
             _context.Entry(user).State = EntityState.Detached;

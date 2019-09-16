@@ -250,3 +250,4 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasPr
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.pdb
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csprojAssemblyReference.cache
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.UserAlias.resources
