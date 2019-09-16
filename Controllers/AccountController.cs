@@ -406,7 +406,7 @@ namespace NotasProject.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            DeleteCurrentUser();
+            DeleteUserItems();
             return RedirectToAction("Index", "Home");
         }
 
