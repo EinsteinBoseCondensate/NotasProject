@@ -52,49 +52,51 @@ namespace NotasProject.Services
         }
         public NotasCache UpdateCache(NotasCache cached, NotaDTO updated)
         {
-            updated.LUDT = DateTime.Now;
+            NotaDTO mod = null;
             if (updated.Anchor)
             {
                 if (cached.anchored.Any(nota => nota.NotaId == updated.NotaId))//No habría cambiado la prioridad
                 {
-                    NotaDTO mod = cached.anchored.First(nota => nota.NotaId == updated.NotaId);
-                    mod.NoteContent = updated.NoteContent;
+                    mod = cached.anchored.First(nota => nota.NotaId == updated.NotaId);
                 }
                 else//eliminar y acoplar en el otro grupo
                 {
-                    cached.anchored.Add(updated);
+                    mod = cached.notAnchored.First(nota => nota.NotaId == updated.NotaId);
+                    cached.anchored.Add(mod);
                     cached.anchored = cached.anchored.OrderByDescending(nota => nota.CDT).ToList();
-                    cached.notAnchored.Remove(cached.notAnchored.First(nota => nota.NotaId == updated.NotaId));
+                    cached.notAnchored.Remove(mod);
                 }
             }
             else
             {
                 if (cached.notAnchored.Any(nota => nota.NotaId == updated.NotaId))//No habría cambiado la prioridad
                 {
-                    NotaDTO mod = cached.notAnchored.First(nota => nota.NotaId == updated.NotaId);
-                    mod.NoteContent = updated.NoteContent;
+                    mod = cached.notAnchored.First(nota => nota.NotaId == updated.NotaId);
                 }
                 else//eliminar y acoplar en el otro grupo
                 {
-                    cached.notAnchored.Add(updated);
+                    mod = cached.anchored.First(nota => nota.NotaId == updated.NotaId);
+                    cached.notAnchored.Add(mod);
                     cached.notAnchored = cached.notAnchored.OrderByDescending(nota => nota.CDT).ToList();
-                    cached.anchored.Remove(cached.anchored.First(nota => nota.NotaId == updated.NotaId));
+                    cached.anchored.Remove(mod);
                 }
             }
+            mod.NoteContent = updated.NoteContent;
+            mod.LUDT = DateTime.Now;
             return cached;
         }
         public NotasCache RemoveFromCache(NotasCache cached, SinglePropJson json)
-    {
-        if (cached.anchored.Any(nota => nota.NotaId == int.Parse(json.Value)))
         {
-            cached.anchored.Remove(cached.anchored.Where(nota => nota.NotaId == int.Parse(json.Value)).First());
+            if (cached.anchored.Any(nota => nota.NotaId == int.Parse(json.Value)))
+            {
+                cached.anchored.Remove(cached.anchored.Where(nota => nota.NotaId == int.Parse(json.Value)).First());
+            }
+            else
+            {
+                cached.notAnchored.Remove(cached.notAnchored.Where(nota => nota.NotaId == int.Parse(json.Value)).First());
+            }
+            return cached;
         }
-        else
-        {
-            cached.notAnchored.Remove(cached.notAnchored.Where(nota => nota.NotaId == int.Parse(json.Value)).First());
-        }
-        return cached;
-    }
     }
     
 }

@@ -14,38 +14,49 @@
     @RenderSection("scripts", required: false)
     @Styles.Render("~/Content/css")
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="top-part-container">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @Html.ActionLink(AppName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                        <li>@Html.ActionLink("Notas", "Index", "Notas")</li>
-                        <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                    </ul>
-                    @Html.Partial("_LoginPartial")
+    <nav class="lateral-navbar lateral-closed">
+        <ul class="sidebar-nav items-uncollapsed ">
+            <li><p class="item-decorator">@Html.ActionLink("Inicio", "Index", "Home")</p></li>
+            <li><p class="item-decorator" >@Html.ActionLink("Notas", "Index", "Notas")</p></li>
+            <li><p class="item-decorator" >@Html.ActionLink("Contacto", "Contact", "Home")</p></li>
+        </ul>
+    </nav>
+    <div class="main-container main-open">
+        <div class="top-part-container">
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div id="back-bars" class="initial sided" onclick="manageCollapse()"><i class="fas fa-bars bars-icon initial-icon"></i></div>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        @*@Html.ActionLink(AppName, "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <ul id="actions-partial" class="nav navbar-nav" hidden>
+                            <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
+                            <li>@Html.ActionLink("Notas", "Index", "Notas")</li>
+                            <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
+                        </ul>
+                        @Html.Partial("_LoginPartial")
+                    </div>
                 </div>
             </div>
+            <div class="top-container">
+                <h1>@ViewBag.Title</h1>
+                <p>@ViewBag.Description</p>
+            </div>
+            <div class="header main-open text-center titlespan" id="myHeader">
+            </div>
         </div>
-        <div class="top-container">
-            <h1>@ViewBag.Title</h1>
-            <p>@ViewBag.Description</p>
-        </div>
-        <div class="header text-center titlespan" id="myHeader">
-        </div>
-    </div>
 
         <div class="container body-content main-body">
             <div>
@@ -57,45 +68,133 @@
                 <p>&copy; @DateTime.Now.Year - @AppName</p>
             </footer>
         </div>
-        <div class="popupContainer">
-            @Html.Partial("../AjaxModals/ModalExitoPartial")
-            @Html.Partial("../AjaxModals/ModalErrorPartial")
-        </div>
-        <script>
-            var doneDown = false, doneUp = false;
-            $(document).ready(function () {
-                function Token() { return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
-                window.onscroll = function () { myFunction() };
-                var header = document.getElementById("myHeader");
-                var sticky = header.offsetTop;
-                function myFunction() {
-                    if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
-                        if (!doneDown) {
-                            header.classList.add("sticky");
-                            $(header).css({ "top": $(".navbar")[0].scrollHeight + "px" });
-                            var postizo = document.createElement('div');
-                            $(postizo).addClass("postizo");
-                            $(".top-part-container")[0].appendChild(postizo)
-                            header.innerHTML = $(".top-container").find("h1")[0].innerHTML;
-                            $(".body-content").css({ "margin-top": $(header).scrollHeight + "px" });
-                            doneDown = true;
-                            doneUp = false;
-                        }
-                    } else if (!doneUp) {
-                        doneDown = false;
-                        doneUp = true;
-                        if ($(".postizo")[0] != undefined) {
-                            $(".postizo")[0].remove();
-                        }
-                        header.classList.remove("sticky");
-                        $(header).css({ "top": "0px" })
-                        header.innerHTML = "";
+    </div>
+    <div class="popupContainer">
+        @Html.Partial("../AjaxModals/ModalExitoPartial")
+        @Html.Partial("../AjaxModals/ModalErrorPartial")
+    </div>
+    <script>
+        function simpleFreeze(val) { return Object.freeze({ value: val }) };
+        var doneDown = simpleFreeze(false), doneUp = simpleFreeze(false), collapsedState = simpleFreeze(false), doneForced = simpleFreeze(false),
+            header = document.getElementById("myHeader"), mainContainer = $(".main-container"), lateralNavBar = $(".lateral-navbar"),
+            backBars = $("#back-bars"), barsIcon = $(".bars-icon"), sticky = header.offsetTop,
+            className = (window.pageYOffset <= (sticky - $(".navbar")[0].scrollHeight)) ? "header-closed-relative" : "header-closed",
+            innerLatNavBar = $("nav").find('ul'),
+            decorators = $(".item-decorator");
+        window.addEventListener("resize", function () {
+            if (window.innerWidth <= 768) {
+                if (!doneForced.value) {
+                    if (collapsedState.value) {
+                        manageCollapse();
                     }
+                    backBars.attr("hidden", true);
+                    $("#actions-partial").attr("hidden", false);
+                    doneForced = simpleFreeze(true);
                 }
-            });
-        </script>
+            } else if (doneForced.value) {
+                doneForced = simpleFreeze(false);
+                backBars.attr("hidden", false);
+                $("#actions-partial").attr("hidden", true);
+            }
+        });
+        function UnCollapse() {
+            mainContainer.removeClass("main-closed"); mainContainer.addClass("main-open");
+            lateralNavBar.removeClass("lateral-open"); lateralNavBar.addClass("lateral-closed");
+            backBars.removeClass("final"); backBars.addClass("initial"); backBars.addClass("sided");
+            barsIcon.removeClass("final-icon"); barsIcon.addClass("initial-icon");
 
-        @Scripts.Render("~/bundles/modals")
+            $(header).removeClass(className); $(header).addClass("main-open");
+            innerLatNavBar.addClass("items-uncollapsed"); innerLatNavBar.removeClass("items-collapsed");
+            decorators.addClass("decorator-initial");decorators.removeClass("decorator-final");
+        }
+        function Collapse() {
+
+
+            mainContainer.removeClass("main-open"); mainContainer.addClass("main-closed");
+
+            lateralNavBar.removeClass("lateral-closed"); $(".lateral-navbar").addClass("lateral-open");
+
+            backBars.removeClass("initial"); backBars.addClass("final"); backBars.removeClass("sided");
+            barsIcon.removeClass("initial-icon"); barsIcon.addClass("final-icon");
+            $(header).removeClass(className); $(header).addClass("main-open");
+
+            innerLatNavBar.removeClass("items-uncollapsed"); innerLatNavBar.addClass("items-collapsed");
+            decorators.addClass("decorator-final");decorators.removeClass("decorator-initial");
+        }
+        function manageCollapse() {
+            $.when((function () {
+                if (collapsedState.value) {
+                    UnCollapse();
+                } else {
+                    Collapse();
+                }
+            })()
+            ).done(function () {
+                collapsedState = simpleFreeze(!collapsedState.value);
+            }).then(function () {
+                setStyle(".sticky{position: fixed;top: " + $(".navbar")[0].scrollHeight + "px; display: inline;width: " + (collapsedState.value ? "83.82% !important;" : "100% !important;") + "transition: width 0.1s ease-in-out 0.05s;} ", "stickyStyleSheet");
+                $(".bars-icon").toggleClass("middle-icon");
+            });
+
+        }
+
+        function setStyle(cssText, nod = "InjectableSheet") {
+            var node = document.getElementById(nod);
+            if (!node) {
+                var sheet = document.createElement('style');
+                sheet.type = 'text/css';
+                sheet.id = nod;
+                (document.head || document.getElementsByTagName('head')[0]).appendChild(sheet);
+            } else {
+                var sheet = node;
+            }
+            sheet.innerHTML = cssText;
+        };
+
+        $(document).ready(function () {
+            backBars.hover(function () { $(".bars-icon").addClass("middle-icon"); });
+            backBars.mouseleave(function () { $(".bars-icon").removeClass("middle-icon"); });
+            function Token() { return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
+
+            window.onscroll = function () { myFunction() };
+
+            var header = document.getElementById("myHeader");
+            var sticky = header.offsetTop;
+
+            function myFunction() {
+
+                if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
+                    if (!doneDown.value) {
+                        header.classList.remove("topHeader");
+                        setStyle(".sticky{position: fixed;top: " + $(".navbar")[0].scrollHeight + "px; display: inline;width: " + (collapsedState.value ? "83.82% !important;" : "100%;") + " } ", "stickyStyleSheet");
+                        header.classList.add("sticky");
+                        var postizo = document.createElement('div');
+                        $(postizo).addClass("postizo");
+                        $(".top-part-container")[0].appendChild(postizo);
+                        header.innerHTML = $(".top-container").find("h1")[0].innerHTML;
+                        doneDown = simpleFreeze(true);
+                        doneUp = simpleFreeze(false);
+                    }
+                } else if (!doneUp.value) {
+                    doneDown = simpleFreeze(false);
+                    doneUp = simpleFreeze(true);
+                    if ($(".postizo")[0] != undefined) {
+                        $(".postizo")[0].remove();
+                    }
+                    header.classList.remove("sticky");
+                    setStyle(".topHeader{ top: " + $('.navbar')[0].scrollHeight + "px;}", "topHeaderStyleSheet");
+                    header.classList.add("topHeader");
+                    header.innerHTML = "";
+                }
+
+            }
+
+
+
+        });
+    </script>
+
+    @Scripts.Render("~/bundles/modals")
 </body>
 </html>
 
