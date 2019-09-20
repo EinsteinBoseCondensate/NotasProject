@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -6,9 +7,12 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NotasProject.Models;
+using NotasProject.Models.Config;
+using NotasProject.Models.Jsons;
 using NotasProject.Properties;
 using NotasProject.Services;
 
@@ -19,16 +23,18 @@ namespace NotasProject.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private UserService _userserv;
+        private readonly UserService UserService;
+        private int CodesExpirationInterval => int.Parse(ConfigurationManager.AppSettings.Get(Resources.CodesExpirationInterval));
 
-        public AccountController(UserService userserv) : base()
+        public AccountController() : base()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager) : base()
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, UserService userService) : base()
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            UserService = userService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -37,9 +43,9 @@ namespace NotasProject.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -69,11 +75,18 @@ namespace NotasProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async  Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null && !await UserManager.IsEmailConfirmedAsync(user.Id))
+            {
+                ViewBag.errorMessage = Resources.EmailConfirmationMessage;
+                ViewBag.buttonFailedLinkFlag = true;
+                return View("Error");
             }
 
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
@@ -83,8 +96,6 @@ namespace NotasProject.Controllers
             {
                 case SignInStatus.Success:
                     {
-                        ApplicationUser user = UserManager.FindByEmail(model.Email);
-                        //Añadir aquí la compmrobación del EmailVerified y si no es así redirigir, no sé si hay un flag para saber si ya se le ha mandado el correo de verficación, pero habría que distinguir entre las distintas situaciones, cuando ya se le ha mandado pero el usuario no se ha metido a verficar la cuenta...
                         SetSessionItem(Resources.CurrentUserObject, user);
                         return RedirectToLocal(returnUrl);
                     }
@@ -124,11 +135,12 @@ namespace NotasProject.Controllers
                 return View(model);
             }
 
+
             // El código siguiente protege de los ataques por fuerza bruta a los códigos de dos factores. 
             // Si un usuario introduce códigos incorrectos durante un intervalo especificado de tiempo, la cuenta del usuario 
             // se bloqueará durante un período de tiempo especificado. 
             // Puede configurar el bloqueo de la cuenta en IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -150,34 +162,43 @@ namespace NotasProject.Controllers
             ViewBag.Description = "";
             return View();
         }
-
+        [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+        public ActionResult ResendEmailVerificationCode(ForgotPasswordViewModel vm)
+        {
+            var user = UserService.GetByEmail(vm.Email);
+            if (user == null)
+                return View("Error");
+            ProcessEmailVerification(user.Id, user.Email, user.Alias);
+            ViewBag.infoMessage = Resources.AccountResendEmailVerificationCode;
+            return View("Info");
+        }
         //
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public ActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var result =  UserManager.Create(user, model.Password);
                 user.Alias = model.Alias;
 
                 if (result.Succeeded)
                 {
-                    await UserManager.UpdateAsync(user);
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    SetSessionItem(Resources.CurrentUserObject, user);
+                    UserManager.Update(user);
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
 
                     //TO DO: Configurar SMTP
-                    //string code = UserManager.GenerateEmailConfirmationToken(user.Id);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                   /// await UserManager.EmailService.SendAsync(new IdentityMessage() { Destination = , "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>" });
-
-                    return RedirectToAction("Index", "Home");
+                    //Leyendo por ahí que en Azure hay que unificar los containers de los kubernetes con respecto a las machineKeys
+                    //y la cuenta gratuita no da margen en este aspecto (de hecho no permite administrar claves para encriptar por ejemplo el web.config) implemento mi propia confirmación
+                    //y aprovecho para hacer la validez del token generado como una cualidad estática, al guardar la fecha límite encriptada en el token
+                    //El Token tiene la sigiuente forma:               EncriptadoPorAES(  UserId + keyCacheSeparator + ExpirationDate  )   +   keyCacheSeparator   +   Nonce (o "IV" de encriptación)
+                    ProcessEmailVerification(user.Id, model.Email, model.Alias);
+                    ViewBag.infoMessage = Resources.InitialEmailConfirmationMessage;
+                    return View("Info");
                 }
                 AddErrors(result);
             }
@@ -185,18 +206,40 @@ namespace NotasProject.Controllers
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
-
-        //
+        public void ProcessEmailVerification(string userId, string email, string alias, string route = "Account/ConfirmEmail", string message = "Para confirmar la cuenta")
+        {
+            string[] routeParts = route.Split('/');
+            var infoToEncript = string.Format("{0}{1}{2}", userId, Resources.KeyCacheSeparator, DateTime.Now.AddMinutes(CodesExpirationInterval).ToString());
+            AES_Result code = CryptoService.AES_Encrypt(infoToEncript);
+            var callbackUrl = Url.Action(routeParts[1], routeParts[0], new { userId, code = string.Format("{0}{1}{2}", code.CipherData, Resources.KeyCacheSeparator, code.Nonce) }, protocol: Request.Url.Scheme);
+            EmailService es = new EmailService();
+            Task.Run(()=>es.SendAsync(new IdentityMessage() { Destination = string.Format("{0}{1}{2}", email, Resources.KeyCacheSeparator, alias), Subject = "Confirmar cuenta", Body = string.Format("{0}{1}{2}{3}", message, ", haga clic <a href=\"", callbackUrl, "\">aquí</a>" )}));
+        }
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public ActionResult ConfirmEmail(string userId, string code)
         {
-            if (userId == null || code == null)
+            ConfirmationState cs = UserService.IsConfirmationOk(userId, code);
+            if (cs != ConfirmationState.OK)
             {
+                if (cs == ConfirmationState.DataKO)
+                {
+                    ViewBag.errorMessage = Resources.AccountConfirmLinkFailed;
+                    ViewBag.buttonFailedLinkFlag = true;
+                }
+                else if (cs == ConfirmationState.Outdated)
+                {
+                    ViewBag.errorMessage = Resources.AccountConfirmLinkOutdated;
+                    ViewBag.buttonFailedLinkFlag = true;
+                }
+                else if (cs == ConfirmationState.ConnectionProblem)
+                {
+                    ViewBag.errorMessage = Resources.AccountConfirmLinkOutofConnection;
+                }
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            SetString(Resources.ConfirmEmailOKFlag, "OK");
+            return View("ConfirmEmail" );
         }
 
         //
@@ -220,22 +263,14 @@ namespace NotasProject.Controllers
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // No revelar que el usuario no existe o que no está confirmado
-                    return View("ForgotPasswordConfirmation");
+                    return RedirectToAction("Index", "Home");
                 }
-
-                // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
-                // Enviar correo electrónico con este vínculo
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                ProcessEmailVerification(user.Id, user.Email, user.Alias, "Account/ResetPassword", "Para reestablecer contraseña");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
-
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
 
-        //
         // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
@@ -246,9 +281,14 @@ namespace NotasProject.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword(string userId, string code)
         {
-            return code == null ? View("Error") : View();
+            if(UserService.IsConfirmationOk(userId,code,false) != ConfirmationState.OK)
+            {
+                ViewBag.errorMessage = Resources.AccountResetPasswordBadLink;
+                return View("Error");
+            }
+            return View();
         }
 
         //
@@ -266,15 +306,18 @@ namespace NotasProject.Controllers
             if (user == null)
             {
                 // No revelar que el usuario no existe
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                return RedirectToAction("Index", "Home");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-            if (result.Succeeded)
+            string hashedNewPassword = UserManager.PasswordHasher.HashPassword(model.Password);
+            user.PasswordHash = hashedNewPassword;
+            var result = UserManager.Update(user);
+            if (result != new IdentityResult())
             {
+                //Mejor loguearle?Sip
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            AddErrors(result);
-            return View();
+            ViewBag.errorMessage = Resources.AccountResetPassUpdatingError;
+            return View("Error");
         }
 
         //

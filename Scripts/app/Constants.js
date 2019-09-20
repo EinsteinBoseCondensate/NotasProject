@@ -1,5 +1,5 @@
-﻿const Messages = Object.freeze({
-    GeneralKO: function (err) { return "El servidor no responde o no tienes conexión, el error fue: " + err},
+﻿Messages = Object.freeze({
+    GeneralKO: function (err) { return "El servidor no responde o no tienes conexión, el error fue: " + JSON.stringify(err) },
     SaveFail: "Tu nota no ha podido editarse",
     SaveSuccess: "Tu nota se editó correctamente",
     CreateSucces: "Tu nota se creó correctamente",

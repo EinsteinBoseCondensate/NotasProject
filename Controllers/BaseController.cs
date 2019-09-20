@@ -46,7 +46,7 @@ namespace NotasProject.Controllers
         }
         public ApplicationUser GetCurrentUser()
         {
-            return ExistsKey(Resources.CurrentUserObject) ? GetSessionItem<ApplicationUser>(Resources.CurrentUserObject) : GetFromPrincipal() ;
+            return ExistsKey(Resources.CurrentUserObject) ? GetSessionItem<ApplicationUser>(Resources.CurrentUserObject) : GetFromPrincipal();
         }
         public void DeleteUserItems()
         {
@@ -65,9 +65,12 @@ namespace NotasProject.Controllers
         public void RemoveFromSession(string key)
         {
             IterateKeys(out string[] aux);
-            var keypart = aux.FirstOrDefault(x => x.ToString() == (key));
-            var truekey = Session.Keys.Get(Array.IndexOf(aux, keypart));
-            Session.Remove(truekey);
+            if (aux.Any(k => k == key))
+            {
+                var keypart = aux.FirstOrDefault(x => x.ToString() == (key));
+                var truekey = Session.Keys.Get(Array.IndexOf(aux, keypart));
+                Session.Remove(truekey);
+            }
         }
         public bool ExistsKey(string key)
         {
@@ -104,7 +107,7 @@ namespace NotasProject.Controllers
         //irían aumentando las casuísiticas y en este método se tratarían todas ellas, al menos las de carácter general.
         public ActionResult SimpleJSONFeedback(PersistedState ps)
         {
-             return Json(new { persState = ps == PersistedState.OK ? "OK" : "KO" });
+            return Json(new { persState = ps == PersistedState.OK ? "OK" : "KO" });
         }
     }
 }

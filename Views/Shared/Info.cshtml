@@ -1,0 +1,21 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Info";
+}
+<div class="text-center error-img-container adjust-info">
+    <img src="../../Content/Images/Info.svg" />
+</div>
+<div class="shadow output-container error-info">
+        <h1 class="text-info"></h1>
+        @{
+            if (String.IsNullOrEmpty(ViewBag.infoMessage))
+            {
+                <h2 class="text-info">Vuelve a intentarlo en unos instantes, disculpa las molestias</h2>
+            }
+            else
+            {
+                <h2 class="text-info">@ViewBag.infoMessage</h2>
+            }
+        }
+    </div>

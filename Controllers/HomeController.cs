@@ -7,15 +7,22 @@ using NotasProject.Properties;
 
 namespace NotasProject.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {
+            var checker = ExistsKey(Resources.ConfirmEmailOKFlag);
             ViewBag.Title = Resources.HomeIndexTitle;
-            ViewBag.Description = Resources.HomeIndexDescription;
+            ViewBag.Description = Request.IsAuthenticated ?
+                                        checker ? Resources.HomeIndexDescriptionOnFirstAuth : Resources.HomeIndexDescriptionOnAuth 
+                                  : Resources.HomeIndexDescriptionUnAuth;
+            if (checker)
+            {
+                RemoveFromSession(Resources.ConfirmEmailOKFlag);
+            }
             return View();
         }
-
+        [Authorize]
         public ActionResult Contact()
         {
             ViewBag.Title = Resources.HomeContactTitle;

@@ -48,6 +48,10 @@ namespace NotasProject.Repoositories
         {
             return _set.AsQueryable();
         }
+        public void SetEntityState(T entity, EntityState state)
+        {
+            _context.Entry(entity).State = state;
+        }
         public PersistedState TrySaveChanges()
         {
             try

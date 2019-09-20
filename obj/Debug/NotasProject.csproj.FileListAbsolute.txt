@@ -174,8 +174,10 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\roslyn\vbc.rs
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\roslyn\VBCSCompiler.exe
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\roslyn\VBCSCompiler.exe.config
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Antlr3.Runtime.dll
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\BouncyCastle.Crypto.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\EntityFramework.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\EntityFramework.SqlServer.dll
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\MailKit.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.AspNet.Identity.Core.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.AspNet.Identity.EntityFramework.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.AspNet.Identity.Owin.dll
@@ -186,6 +188,7 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.Owi
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.Owin.Security.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.Owin.Security.Facebook.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\MimeKit.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Newtonsoft.Json.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Owin.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Runtime.CompilerServices.Unsafe.dll
@@ -202,6 +205,9 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Unity.Contain
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Unity.Mvc.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\WebActivatorEx.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\WebGrease.dll
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\MailKit.xml
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\MimeKit.xml
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Newtonsoft.Json.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Threading.Tasks.Extensions.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Web.Helpers.xml
@@ -211,7 +217,6 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Web.Ra
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Web.WebPages.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Web.WebPages.Deployment.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\System.Web.WebPages.Razor.xml
-C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Newtonsoft.Json.xml
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Unity.Abstractions.pdb
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Unity.Container.pdb
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\Unity.Mvc.pdb
@@ -240,14 +245,14 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\EntityFram
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.Core.resources.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.Owin.resources.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csprojAssemblyReference.cache
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.SchemaCreation.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.AddingActivityLog.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.UpdateNota.resources
+C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.UserAlias.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Properties.Resources.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csproj.GenerateResource.cache
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csproj.CoreCompileInputs.cache
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csproj.CopyComplete
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.pdb
-C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csprojAssemblyReference.cache
-C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.UserAlias.resources

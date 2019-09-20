@@ -1,26 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+using System.Configuration;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
+using MailKit.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using MimeKit;
+using MimeKit.Text;
 using NotasProject.Models;
+using NotasProject.Properties;
+using NotasProject.Services;
 
 namespace NotasProject
 {
     public class EmailService : IIdentityMessageService
     {
+        private readonly SmtpSettings ec = new SmtpSettings();
         public Task SendAsync(IdentityMessage message)
         {
-            // Conecte su servicio de correo electrónico aquí para enviar correo electrónico.
-            return Task.FromResult(0);
+            try
+            { 
+                    var splitted = message.Destination.Split(new string[] { Resources.KeyCacheSeparator }, StringSplitOptions.None);
+                using (var emailMessage = new MailMessage(ec.FromAddress, splitted[0]))
+                using (var client = new SmtpClient())
+                {
+                    client.Host = ec.MailServerAddress;
+                    client.Port = ec.MailServerPort;
+                    client.EnableSsl = true;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(ec.UserId, ec.UserPassword);
+                    emailMessage.Body = message.Body;
+                    emailMessage.Subject = message.Subject;
+                    emailMessage.IsBodyHtml = true;
+                    client.Send(emailMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggerService.LogException(ex);
+            }
+            return Task.CompletedTask;
         }
+    }
+
+    internal class SmtpSettings
+    {
+        public string FromName { get{ return ConfigurationManager.AppSettings.Get("FromName"); } }
+        public string FromAddress { get{ return ConfigurationManager.AppSettings.Get("FromAddress"); } }
+        public string LocalDomain { get{ return ConfigurationManager.AppSettings.Get("LocalDomain"); } }
+        public string MailServerAddress { get{ return ConfigurationManager.AppSettings.Get("MailServerAddress"); } }
+        public int MailServerPort { get{ return int.Parse(ConfigurationManager.AppSettings.Get("MailServerPort")); } }
+        public string UserId { get{ return ConfigurationManager.AppSettings.Get("UserId"); } }
+        public string UserPassword { get{ return ConfigurationManager.AppSettings.Get("UserPassword"); } }
     }
 
     public class SmsService : IIdentityMessageService
@@ -42,12 +79,14 @@ namespace NotasProject
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var store = new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>());
+            var manager = new ApplicationUserManager(store);
             // Configure la lógica de validación de nombres de usuario
+            manager.Store = store;
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true,
+                RequireUniqueEmail = true
             };
 
             // Configure la lógica de validación de contraseñas
@@ -78,7 +117,7 @@ namespace NotasProject
             //    Subject = "Código de seguridad",
             //    BodyFormat = "Su código de seguridad es {0}"
             //});
-            //manager.EmailService = new EmailService();
+            manager.EmailService = new EmailService();
             //manager.SmsService = new SmsService();
 
             var dataProtectionProvider = options.DataProtectionProvider;

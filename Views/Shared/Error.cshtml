@@ -1,9 +1,23 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
-@{
-    ViewBag.Title = "Error";
-}
-
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">Error al procesar la solicitud.</h2>
-
+@Html.AntiForgeryToken()
+<div class="text-center error-img-container adjust-info">
+    <img src="../../Content/Images/GeneralKO.svg" />
+</div>
+<div class="shadow output-container error-info">
+    <h1 class="text-danger">Error</h1>
+    @{
+        if (String.IsNullOrEmpty(ViewBag.errorMessage))
+        {
+            <h2 class="text-danger">Vaya... algo no anda bien, trabajaremos en ello, disculpa las molestias</h2>
+        }
+        else
+        {
+            <h2 class="text-danger">@ViewBag.errorMessage</h2>
+            if (ViewBag.buttonFailedLinkFlag != null && ViewBag.buttonFailedLinkFlag)
+            {
+                @Html.Partial("../HandleErrors/ReSendEmailVerificationPartial")
+            }
+        }
+    }
+</div>

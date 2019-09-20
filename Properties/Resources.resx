@@ -117,11 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccountConfirmLinkFailed" xml:space="preserve">
+    <value>Algo ha ido mal en el proceso de confirmación, obtén un nuevo código introduciendo tu correo y pulsando en "Reenviar confirmación"</value>
+  </data>
+  <data name="AccountConfirmLinkOutdated" xml:space="preserve">
+    <value>El enlace ha caducado,  la buena noticia es que puedes pedir una nueva confirmación aquí mismo, introduce tu email y solicíítala</value>
+  </data>
+  <data name="AccountConfirmLinkOutofConnection" xml:space="preserve">
+    <value>Ha ocurrido un problema inesperado de conexión, prueba más tarde, disculpa las molestias</value>
+  </data>
   <data name="AES_KEY" xml:space="preserve">
     <value>AES_KEY</value>
   </data>
+  <data name="ConfirmEmailOKFlag" xml:space="preserve">
+    <value>ConfirmEmailOKFlag</value>
+  </data>
   <data name="CurrentUserObject" xml:space="preserve">
     <value>CurrentUserObject</value>
+  </data>
+  <data name="EmailConfirmationMessage" xml:space="preserve">
+    <value>Aún no se ha recibido la confirmación de tu correo electrónico, mira en tu bandeja de entrada (incluso en spam), y si ya has probado con el último enlace de confirmación, escribe tu email y solicita reenviar la confirmación</value>
   </data>
   <data name="HomeContactDescription" xml:space="preserve">
     <value>Tu espacio alternativo</value>
@@ -129,11 +144,20 @@
   <data name="HomeContactTitle" xml:space="preserve">
     <value>Contact</value>
   </data>
-  <data name="HomeIndexDescription" xml:space="preserve">
-    <value>Bienvenido, tienes cosas que contarnos, escríbelas</value>
+  <data name="HomeIndexDescriptionOnAuth" xml:space="preserve">
+    <value>Bienvenido, tienes cosas que contarnos, escríbelas.</value>
+  </data>
+  <data name="HomeIndexDescriptionOnFirstAuth" xml:space="preserve">
+    <value>Bienvenido, tienes cosas que contarnos, escríbelas. Cuenta confirmada.</value>
+  </data>
+  <data name="HomeIndexDescriptionUnAuth" xml:space="preserve">
+    <value>Bienvenido, tienes cosas que contarnos, escríbelas. Pero antes, loguéate o regístrate.</value>
   </data>
   <data name="HomeIndexTitle" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="InitialEmailConfirmationMessage" xml:space="preserve">
+    <value>Chequea en tu bandeja de entrada para confirmar tu email por favor, si no lo encuentras echa un vistazo en la carpeta de spam</value>
   </data>
   <data name="KeyCacheSeparator" xml:space="preserve">
     <value>_$__%___&amp;___%__$_</value>
@@ -149,5 +173,20 @@
   </data>
   <data name="NotasIndexTitle" xml:space="preserve">
     <value>Notas</value>
+  </data>
+  <data name="CodesExpirationInterval" xml:space="preserve">
+    <value>CodesExpirationInterval</value>
+  </data>
+  <data name="AccountConfirmLinkBroken" xml:space="preserve">
+    <value>No nos gusta este enlace, la buena noticia es que puedes pedir una nueva confirmación aquí mismo, introduce tu email y solicíítala</value>
+  </data>
+  <data name="AccountResetPasswordBadLink" xml:space="preserve">
+    <value>Enlace roto, lo sentimos</value>
+  </data>
+  <data name="AccountResendEmailVerificationCode" xml:space="preserve">
+    <value>Consulta tu bandeja de entrada, se acaba de mandar otra petición de confirmación</value>
+  </data>
+  <data name="AccountResetPassUpdatingError" xml:space="preserve">
+    <value>Un error inesperado ha ocurrido actualizando tu contraseña, disculpa las molestias e inténtalo de nuevo</value>
   </data>
 </root>

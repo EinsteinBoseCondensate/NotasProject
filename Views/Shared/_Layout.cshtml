@@ -22,8 +22,8 @@
     <nav class="lateral-navbar lateral-closed">
         <ul class="sidebar-nav items-uncollapsed ">
             <li><p class="item-decorator">@Html.ActionLink("Inicio", "Index", "Home")</p></li>
-            <li><p class="item-decorator" >@Html.ActionLink("Notas", "Index", "Notas")</p></li>
-            <li><p class="item-decorator" >@Html.ActionLink("Contacto", "Contact", "Home")</p></li>
+            <li><p class="item-decorator">@Html.ActionLink("Notas", "Index", "Notas")</p></li>
+            <li><p class="item-decorator">@Html.ActionLink("Contacto", "Contact", "Home")</p></li>
         </ul>
     </nav>
     <div class="main-container main-open">
@@ -82,7 +82,7 @@
             innerLatNavBar = $("nav").find('ul'),
             decorators = $(".item-decorator");
         window.addEventListener("resize", function () {
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 769) {
                 if (!doneForced.value) {
                     if (collapsedState.value) {
                         manageCollapse();
@@ -105,7 +105,7 @@
 
             $(header).removeClass(className); $(header).addClass("main-open");
             innerLatNavBar.addClass("items-uncollapsed"); innerLatNavBar.removeClass("items-collapsed");
-            decorators.addClass("decorator-initial");decorators.removeClass("decorator-final");
+            decorators.addClass("decorator-initial"); decorators.removeClass("decorator-final");
         }
         function Collapse() {
 
@@ -119,10 +119,10 @@
             $(header).removeClass(className); $(header).addClass("main-open");
 
             innerLatNavBar.removeClass("items-uncollapsed"); innerLatNavBar.addClass("items-collapsed");
-            decorators.addClass("decorator-final");decorators.removeClass("decorator-initial");
+            decorators.addClass("decorator-final"); decorators.removeClass("decorator-initial");
         }
         function manageCollapse() {
-            $.when((function () {
+            $.when((function () {//Esto en verdad corre sincrónicamente sin la estructura "when" de jQ
                 if (collapsedState.value) {
                     UnCollapse();
                 } else {
@@ -152,6 +152,10 @@
         };
 
         $(document).ready(function () {
+            if ($('body')[0].clientWidth <= 769) {//En conjunción con 'resize' Listener
+                backBars.attr("hidden", true);
+                $("#actions-partial").attr("hidden", false);
+            }
             backBars.hover(function () { $(".bars-icon").addClass("middle-icon"); });
             backBars.mouseleave(function () { $(".bars-icon").removeClass("middle-icon"); });
             function Token() { return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }

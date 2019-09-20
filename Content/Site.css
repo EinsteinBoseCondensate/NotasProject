@@ -72,6 +72,7 @@ nav > ul > li {
 
 .items-uncollapsed {
     opacity: 0;
+    margin-left:-1000px !important;
 }
 
 .items-collapsed {
@@ -203,7 +204,7 @@ nav > ul > li {
 }
 
 .main-notas-container {
-    height: 60rem;
+    height: 120rem;
 }
 
 .allow-overflow {
@@ -381,4 +382,30 @@ input, select, textarea {
     .buttons-margin-top {
         margin-top: 30%;
     }
+}
+
+.error-info {
+    z-index: 50;
+    background-color: white;
+    opacity: 0.92;
+    padding: 30px;
+    border-radius: 17px;
+}
+.error-img-container {
+    z-index: -15;
+    margin-top: -350px;
+}
+.resend-input-mail {
+    border-radius: 4px;
+    transform: scale(1.1);
+}
+.resend-confirmation {
+    float: right;
+    margin-left: 5px;
+    margin-bottom: 3px;
+}
+.adjust-info {
+    width: 30%;
+    margin-left: 36%;
+    margin-top: -15em;
 }

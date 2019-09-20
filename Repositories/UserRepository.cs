@@ -25,5 +25,10 @@ namespace NotasProject.Repositories
         {
             _context.Entry(user).State = EntityState.Detached;
         }
+
+        public ApplicationUser GetById(string userId)
+        {
+            return this.BuildQuery().FirstOrDefault(user => user.Id == userId);
+        }
     }
 }

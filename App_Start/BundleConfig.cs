@@ -29,10 +29,10 @@ namespace NotasProject
             bundles.Add(new ScriptBundle("~/bundles/quill").Include(
                         "~/Scripts/QuillEditor.js"));
             bundles.Add(new ScriptBundle("~/bundles/manageNotas").Include(
-                        "~/Scripts/app/notas.js",
-                        "~/Scripts/app/Constants.js"));
+                        "~/Scripts/app/notas.js"));
             bundles.Add(new ScriptBundle("~/bundles/modals").Include(
-                        "~/Scripts/app/AjaxModals.js"));
+                        "~/Scripts/app/AjaxModals.js",
+                        "~/Scripts/app/constants.js"));
         }
     }
 }

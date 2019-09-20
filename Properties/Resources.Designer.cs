@@ -61,6 +61,69 @@ namespace NotasProject.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a No nos gusta este enlace, la buena noticia es que puedes pedir una nueva confirmación aquí mismo, introduce tu email y solicíítala.
+        /// </summary>
+        public static string AccountConfirmLinkBroken {
+            get {
+                return ResourceManager.GetString("AccountConfirmLinkBroken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Algo ha ido mal en el proceso de confirmación, obtén un nuevo código introduciendo tu correo y pulsando en &quot;Reenviar confirmación&quot;.
+        /// </summary>
+        public static string AccountConfirmLinkFailed {
+            get {
+                return ResourceManager.GetString("AccountConfirmLinkFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El enlace ha caducado,  la buena noticia es que puedes pedir una nueva confirmación aquí mismo, introduce tu email y solicíítala.
+        /// </summary>
+        public static string AccountConfirmLinkOutdated {
+            get {
+                return ResourceManager.GetString("AccountConfirmLinkOutdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ha ocurrido un problema inesperado de conexión, prueba más tarde, disculpa las molestias.
+        /// </summary>
+        public static string AccountConfirmLinkOutofConnection {
+            get {
+                return ResourceManager.GetString("AccountConfirmLinkOutofConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Consulta tu bandeja de entrada, se acaba de mandar otra petición de confirmación.
+        /// </summary>
+        public static string AccountResendEmailVerificationCode {
+            get {
+                return ResourceManager.GetString("AccountResendEmailVerificationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Un error inesperado ha ocurrido actualizando tu contraseña, disculpa las molestias e inténtalo de nuevo.
+        /// </summary>
+        public static string AccountResetPassUpdatingError {
+            get {
+                return ResourceManager.GetString("AccountResetPassUpdatingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Enlace roto, lo sentimos.
+        /// </summary>
+        public static string AccountResetPasswordBadLink {
+            get {
+                return ResourceManager.GetString("AccountResetPasswordBadLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a AES_KEY.
         /// </summary>
         public static string AES_KEY {
@@ -70,11 +133,38 @@ namespace NotasProject.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a CodesExpirationInterval.
+        /// </summary>
+        public static string CodesExpirationInterval {
+            get {
+                return ResourceManager.GetString("CodesExpirationInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ConfirmEmailOKFlag.
+        /// </summary>
+        public static string ConfirmEmailOKFlag {
+            get {
+                return ResourceManager.GetString("ConfirmEmailOKFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a CurrentUserObject.
         /// </summary>
         public static string CurrentUserObject {
             get {
                 return ResourceManager.GetString("CurrentUserObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Aún no se ha recibido la confirmación de tu correo electrónico, mira en tu bandeja de entrada (incluso en spam), y si ya has probado con el último enlace de confirmación, escribe tu email y solicita reenviar la confirmación.
+        /// </summary>
+        public static string EmailConfirmationMessage {
+            get {
+                return ResourceManager.GetString("EmailConfirmationMessage", resourceCulture);
             }
         }
         
@@ -97,11 +187,29 @@ namespace NotasProject.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Bienvenido, tienes cosas que contarnos, escríbelas.
+        ///   Busca una cadena traducida similar a Bienvenido, tienes cosas que contarnos, escríbelas..
         /// </summary>
-        public static string HomeIndexDescription {
+        public static string HomeIndexDescriptionOnAuth {
             get {
-                return ResourceManager.GetString("HomeIndexDescription", resourceCulture);
+                return ResourceManager.GetString("HomeIndexDescriptionOnAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bienvenido, tienes cosas que contarnos, escríbelas. Cuenta confirmada..
+        /// </summary>
+        public static string HomeIndexDescriptionOnFirstAuth {
+            get {
+                return ResourceManager.GetString("HomeIndexDescriptionOnFirstAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bienvenido, tienes cosas que contarnos, escríbelas. Pero antes, loguéate o regístrate..
+        /// </summary>
+        public static string HomeIndexDescriptionUnAuth {
+            get {
+                return ResourceManager.GetString("HomeIndexDescriptionUnAuth", resourceCulture);
             }
         }
         
@@ -111,6 +219,15 @@ namespace NotasProject.Properties {
         public static string HomeIndexTitle {
             get {
                 return ResourceManager.GetString("HomeIndexTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Chequea en tu bandeja de entrada para confirmar tu email por favor, si no lo encuentras echa un vistazo en la carpeta de spam.
+        /// </summary>
+        public static string InitialEmailConfirmationMessage {
+            get {
+                return ResourceManager.GetString("InitialEmailConfirmationMessage", resourceCulture);
             }
         }
         
