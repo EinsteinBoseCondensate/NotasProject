@@ -245,7 +245,6 @@ C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\EntityFram
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.Core.resources.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.Owin.resources.dll
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\bin\es\Microsoft.AspNet.Identity.EntityFramework.resources.dll
-C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.csprojAssemblyReference.cache
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.SchemaCreation.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.AddingActivityLog.resources
 C:\Users\Ostrogradsky\source\repos\Valencia\Notas\NotasProject\obj\Debug\NotasProject.Migrations.UpdateNota.resources

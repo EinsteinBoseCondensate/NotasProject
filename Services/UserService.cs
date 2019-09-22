@@ -73,28 +73,6 @@ namespace NotasProject.Services
                 return ConfirmationState.DataKO;
             }            
         }
-        public async Task<ConfirmationState> TryResetPassword(ResetPasswordViewModel model)
-        {
-            try
-            {
-                using (ApplicationDbContext context = new ApplicationDbContext())
-                using (UserStore<ApplicationUser> store = new UserStore<ApplicationUser>(context))
-                using (UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(store))
-                {
-                    string hashedNewPassword = UserManager.PasswordHasher.HashPassword(model.Password);
-                    ApplicationUser cUser = await store.FindByIdAsync(model.Email);
-                    await store.SetPasswordHashAsync(cUser, hashedNewPassword);
-                    await store.UpdateAsync(cUser);
-                }
-                //check
-                return ConfirmationState.OK;
-            }catch(Exception e)
-            {
-                UserRepo.LogException(e);
-                UserRepo.Dispose();
-                return ConfirmationState.DataKO;
-            }
-        }
 
     }
 

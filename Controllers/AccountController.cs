@@ -182,7 +182,7 @@ namespace NotasProject.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result =  UserManager.Create(user, model.Password);
+                var result = UserManager.Create(user, model.Password);
                 user.Alias = model.Alias;
 
                 if (result.Succeeded)
@@ -213,7 +213,7 @@ namespace NotasProject.Controllers
             AES_Result code = CryptoService.AES_Encrypt(infoToEncript);
             var callbackUrl = Url.Action(routeParts[1], routeParts[0], new { userId, code = string.Format("{0}{1}{2}", code.CipherData, Resources.KeyCacheSeparator, code.Nonce) }, protocol: Request.Url.Scheme);
             EmailService es = new EmailService();
-            Task.Run(()=>es.SendAsync(new IdentityMessage() { Destination = string.Format("{0}{1}{2}", email, Resources.KeyCacheSeparator, alias), Subject = "Confirmar cuenta", Body = string.Format("{0}{1}{2}{3}", message, ", haga clic <a href=\"", callbackUrl, "\">aquí</a>" )}));
+            Task.Run(() => es.SendAsync(new IdentityMessage() { Destination = string.Format("{0}{1}{2}", email, Resources.KeyCacheSeparator, alias), Subject = "Confirmar cuenta", Body = string.Format("{0}{1}{2}{3}", message, ", haga clic <a href=\"", callbackUrl, "\">aquí</a>") }));
         }
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -239,7 +239,7 @@ namespace NotasProject.Controllers
                 return View("Error");
             }
             SetString(Resources.ConfirmEmailOKFlag, "OK");
-            return View("ConfirmEmail" );
+            return View("ConfirmEmail");
         }
 
         //
@@ -283,12 +283,7 @@ namespace NotasProject.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string userId, string code)
         {
-            if(UserService.IsConfirmationOk(userId,code,false) != ConfirmationState.OK)
-            {
-                ViewBag.errorMessage = Resources.AccountResetPasswordBadLink;
-                return View("Error");
-            }
-            return View();
+            return View(new ResetPasswordViewModel() { Code = code });//no verifico el token aquí porque lo haré cuando se solicite cambiar la contraseña
         }
 
         //
@@ -308,13 +303,17 @@ namespace NotasProject.Controllers
                 // No revelar que el usuario no existe
                 return RedirectToAction("Index", "Home");
             }
-            string hashedNewPassword = UserManager.PasswordHasher.HashPassword(model.Password);
-            user.PasswordHash = hashedNewPassword;
-            var result = UserManager.Update(user);
-            if (result != new IdentityResult())
+            if (UserService.IsConfirmationOk(user.Id, model.Code, false) == ConfirmationState.OK)
             {
-                //Mejor loguearle?Sip
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+
+                string hashedNewPassword = UserManager.PasswordHasher.HashPassword(model.Password);
+                user.PasswordHash = hashedNewPassword;
+                var result = UserManager.Update(user);
+                if (result.Succeeded)
+                {
+                    //Mejor loguearle?Sip
+                    return RedirectToAction("ResetPasswordConfirmation", "Account");
+                }
             }
             ViewBag.errorMessage = Resources.AccountResetPassUpdatingError;
             return View("Error");
