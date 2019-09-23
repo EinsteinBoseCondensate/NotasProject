@@ -75,9 +75,18 @@
     </div>
     <script>
         function simpleFreeze(val) { return Object.freeze({ value: val }) };
-        var doneDown = simpleFreeze(false), doneUp = simpleFreeze(false), collapsedState = simpleFreeze(false), doneForced = simpleFreeze(false),
-            header = document.getElementById("myHeader"), mainContainer = $(".main-container"), lateralNavBar = $(".lateral-navbar"),
-            backBars = $("#back-bars"), barsIcon = $(".bars-icon"), sticky = header.offsetTop,
+        var doneDown = simpleFreeze(false),
+            doneUp = simpleFreeze(false),
+            collapsedState = simpleFreeze(false),
+            doneForced = simpleFreeze(false),
+            clickMenu = 0,
+            doneCollapsedNavBar = simpleFreeze(false),
+            doneEnterNavBar = simpleFreeze(false),
+            header = document.getElementById("myHeader"),
+            mainContainer = $(".main-container"),
+            lateralNavBar = $(".lateral-navbar"),
+            backBars = $("#back-bars"),
+            barsIcon = $(".bars-icon"), sticky = header.offsetTop,
             className = (window.pageYOffset <= (sticky - $(".navbar")[0].scrollHeight)) ? "header-closed-relative" : "header-closed",
             innerLatNavBar = $("nav").find('ul'),
             decorators = $(".item-decorator");
@@ -98,31 +107,55 @@
             }
         });
         function UnCollapse() {
-            mainContainer.removeClass("main-closed"); mainContainer.addClass("main-open");
-            lateralNavBar.removeClass("lateral-open"); lateralNavBar.addClass("lateral-closed");
-            backBars.removeClass("final"); backBars.addClass("initial"); backBars.addClass("sided");
-            barsIcon.removeClass("final-icon"); barsIcon.addClass("initial-icon");
-
-            $(header).removeClass(className); $(header).addClass("main-open");
-            innerLatNavBar.addClass("items-uncollapsed"); innerLatNavBar.removeClass("items-collapsed");
-            decorators.addClass("decorator-initial"); decorators.removeClass("decorator-final");
+            UnCollapseButton();
+            UnCollapseNavBar();
+            UnCollapseGeneralLayout();
         }
         function Collapse() {
-
-
+            CollapseButton();
+            CollapseNavBar();
+            CollapseGeneralLayout();
+        }
+        /* ******************************** Comportamiento de colapsado segregado ******************************** */
+        function CollapseGeneralLayout() {
             mainContainer.removeClass("main-open"); mainContainer.addClass("main-closed");
+            $(header).removeClass(className); $(header).addClass("main-open");
+        }
+        function UnCollapseGeneralLayout() {
+            mainContainer.removeClass("main-closed"); mainContainer.addClass("main-open");
+            $(header).removeClass(className); $(header).addClass("main-open");
+        }
 
-            lateralNavBar.removeClass("lateral-closed"); $(".lateral-navbar").addClass("lateral-open");
-
+        function CollapseButton() {
             backBars.removeClass("initial"); backBars.addClass("final"); backBars.removeClass("sided");
             barsIcon.removeClass("initial-icon"); barsIcon.addClass("final-icon");
-            $(header).removeClass(className); $(header).addClass("main-open");
+        }
+        function UnCollapseButton() {
+            backBars.removeClass("final"); backBars.addClass("initial"); backBars.addClass("sided");
+            barsIcon.removeClass("final-icon"); barsIcon.addClass("initial-icon");
+        }
 
+        function CollapseNavBar() {
+            lateralNavBar.removeClass("lateral-closed"); $(".lateral-navbar").addClass("lateral-open");
             innerLatNavBar.removeClass("items-uncollapsed"); innerLatNavBar.addClass("items-collapsed");
             decorators.addClass("decorator-final"); decorators.removeClass("decorator-initial");
         }
+        function UnCollapseNavBar() {
+            lateralNavBar.removeClass("lateral-open"); lateralNavBar.addClass("lateral-closed");
+            innerLatNavBar.addClass("items-uncollapsed"); innerLatNavBar.removeClass("items-collapsed");
+            decorators.addClass("decorator-initial"); decorators.removeClass("decorator-final");
+        }
+        /* ******************************** ************************************* ******************************** */
         function manageCollapse() {
+
+            clickMenu++;
             $.when((function () {//Esto en verdad corre sincrónicamente sin la estructura "when" de jQ
+                if ($(".lateral-hovered-collapsed").length != 0) {
+                    console.log("aaaaaaa");
+                    lateralNavBar.removeClass("lateral-hovered-collapsed");
+                    lateralNavBar.mouseleave(function () { });
+                    doneCollapsedNavBar = simpleFreeze(!doneCollapsedNavBar.value);
+                }
                 if (collapsedState.value) {
                     UnCollapse();
                 } else {
@@ -150,22 +183,42 @@
             }
             sheet.innerHTML = cssText;
         };
-
+        function onNavBarMouseoutFromButtonHover() {
+            if (clickMenu % 2 == 0 && doneEnterNavBar.value) {
+                UnCollapseNavBar();
+                lateralNavBar.removeClass("lateral-hovered-collapsed");
+                doneEnterNavBar = simpleFreeze(false);
+                doneCollapsedNavBar = simpleFreeze(false);
+            }
+        }
         $(document).ready(function () {
             if ($('body')[0].clientWidth <= 769) {//En conjunción con 'resize' Listener
                 backBars.attr("hidden", true);
                 $("#actions-partial").attr("hidden", false);
             }
-            backBars.hover(function () { $(".bars-icon").addClass("middle-icon"); });
-            backBars.mouseleave(function () { $(".bars-icon").removeClass("middle-icon"); });
+            lateralNavBar.mouseleave(onNavBarMouseoutFromButtonHover);
+            lateralNavBar.hover(function () { doneEnterNavBar = simpleFreeze(true); });
+            backBars.hover(function () {
+                if (!doneCollapsedNavBar.value && $(".main-closed")[0] == undefined && clickMenu == 0) {
+                    CollapseNavBar();
+                    lateralNavBar.addClass("lateral-hovered-collapsed");
+                    doneCollapsedNavBar = simpleFreeze(true);
+                    doneEnterNavBar = simpleFreeze(false);
+                }
+            });
+            backBars.mouseleave(function () {
+                if (clickMenu > 1 && $(".main-closed")[0] == undefined) {
+                    clickMenu = 0;
+                }
+            });
             function Token() { return { "__RequestVerificationToken": $('input[name=__RequestVerificationToken]').val() } }
 
-            window.onscroll = function () { myFunction() };
+            window.onscroll = stickyBannerBehaviour;
 
             var header = document.getElementById("myHeader");
             var sticky = header.offsetTop;
 
-            function myFunction() {
+            function stickyBannerBehaviour() {
 
                 if (window.pageYOffset >= sticky - $(".navbar")[0].scrollHeight) {
                     if (!doneDown.value) {
