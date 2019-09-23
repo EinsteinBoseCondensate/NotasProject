@@ -22,6 +22,7 @@ namespace NotasProject.Repoositories
         public GenericRepo()
         {
             _context = new ApplicationDbContext();
+            _set = _context.Set<T>();
             _disposed = false;
         }
         public PersistedState Create(T entity)
